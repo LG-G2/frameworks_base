@@ -746,8 +746,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                     // the stack trace isn't very helpful here.  Just log the exception message.
                     Log.w(TAG, "Sending contentIntent failed: " + e);
                 }
-
-                KeyguardTouchDelegate.getInstance(mContext).dismiss();
             }
 
             try {
