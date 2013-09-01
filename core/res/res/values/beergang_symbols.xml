@@ -33,5 +33,8 @@
   <java-symbol type="array" name="shutdown_reboot_options" />
   <java-symbol type="array" name="shutdown_reboot_actions" />
   <java-symbol type="string" name="reboot_system" />
+  
+  <!-- Package Manager -->
+  <java-symbol type="array" name="config_disabledComponents" />
 
 </resources>
