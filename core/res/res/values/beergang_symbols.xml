@@ -17,9 +17,6 @@
 -->
 <resources>
 
-  <!-- Package Manager -->
-  <java-symbol type="array" name="config_disabledComponents" />
-
   <!-- Notification and Battery light -->
   <java-symbol type="array" name="notification_light_package_mapping" />
   <java-symbol type="bool" name="config_multiColorBatteryLed" />
