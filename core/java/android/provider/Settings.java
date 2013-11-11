@@ -2578,6 +2578,14 @@ public final class Settings {
         public static final String VOLUME_WAKE_SCREEN = "volume_wake_screen";
 
         /**
+         * Immersive mode global actions switch
+         * 0 = no
+         * 1 = yes
+         * @hide
+         */
+        public static final String IMMERSIVE_MODE = "immersive_mode";
+        
+        /**
          * Whether or not volume button music controls should be enabled to seek media tracks
          * @hide
          */
