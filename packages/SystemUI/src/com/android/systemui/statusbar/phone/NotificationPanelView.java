@@ -206,7 +206,23 @@ public class NotificationPanelView extends PanelView {
                     mTrackingSwipe = false;
                     break;
             }
-
+            if (mOkToFlip && flip) {
+                float miny = event.getY(0);
+                float maxy = miny;
+                for (int i=1; i<event.getPointerCount(); i++) {
+                    final float y = event.getY(i);
+                    if (y < miny) miny = y;
+                    if (y > maxy) maxy = y;
+                }
+                if (maxy - miny < mHandleBarHeight) {
+                    if (mJustPeeked || getExpandedHeight() < mHandleBarHeight) {
+                        mStatusBar.switchToSettings();
+                    } else {
+                        mStatusBar.flipToSettings();
+                    }
+                    mOkToFlip = false;
+                }
+            }
             if (mSwipeTriggered) {
                 final float deltaX = (event.getX(0) - mGestureStartX) * mSwipeDirection;
                 mStatusBar.partialFlip(mFlipOffset +
@@ -234,23 +250,6 @@ public class NotificationPanelView extends PanelView {
         final boolean result = mHandleView.dispatchTouchEvent(event);
         if (shouldRecycleEvent) {
             event.recycle();
-            if (mOkToFlip && flip) {
-                float miny = event.getY(0);
-                float maxy = miny;
-                for (int i=1; i<event.getPointerCount(); i++) {
-                    final float y = event.getY(i);
-                    if (y < miny) miny = y;
-                    if (y > maxy) maxy = y;
-                }
-                if (maxy - miny < mHandleBarHeight) {
-                    if (mJustPeeked || getExpandedHeight() < mHandleBarHeight) {
-                        mStatusBar.switchToSettings();
-                    } else {
-                        mStatusBar.flipToSettings();
-                    }
-                    mOkToFlip = false;
-                }
-            }
         }
         return result;
     }
