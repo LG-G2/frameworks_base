@@ -2386,6 +2386,12 @@ public final class Settings {
         public static final String SCREENSHOT_IN_POWER_MENU = "screenshot_in_power_menu";
 
         /**
+         * Show ScreenRecord in Power Menu
+         * @hide
+         */
+        public static final String SCREENRECORD_IN_POWER_MENU = "screenrecord_in_power_menu";
+
+        /**
          * Show pointer location on screen?
          * 0 = no
          * 1 = yes
