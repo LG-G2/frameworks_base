@@ -858,7 +858,7 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     }
     // BatteryController callback
     @Override
-    public void onBatteryLevelChanged(int level, boolean pluggedIn) {
+    public void onBatteryLevelChanged(int level, boolean pluggedIn, int status) {
         mBatteryState.batteryLevel = level;
         mBatteryState.pluggedIn = pluggedIn;
         mBatteryCallback.refreshView(mBatteryTile, mBatteryState);
