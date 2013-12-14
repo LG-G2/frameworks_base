@@ -2392,6 +2392,24 @@ public final class Settings {
         public static final String SCREENRECORD_IN_POWER_MENU = "screenrecord_in_power_menu";
 
         /**
+         * Show AirplaneMode in Power Menu
+         * @hide
+         */
+        public static final String AIRPLANE_MODE_IN_POWER_MENU = "airplane_mode_in_power_menu";
+
+        /**
+         * Show SoundToggle in Power Menu
+         * @hide
+         */
+        public static final String SOUND_TOGGLES_IN_POWER_MENU = "sound_toggles_in_power_menu";
+
+        /**
+         * Show MobileData in Power Menu
+         * @hide
+         */
+        public static final String MOBILE_DATA_IN_POWER_MENU = "mobile_data_in_power_menu";
+        
+        /**
          * Show pointer location on screen?
          * 0 = no
          * 1 = yes
