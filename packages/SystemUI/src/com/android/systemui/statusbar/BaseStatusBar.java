@@ -69,7 +69,7 @@ import com.android.systemui.R;
 import com.android.systemui.RecentsComponent;
 import com.android.systemui.SearchPanelView;
 import com.android.systemui.SystemUI;
-import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;<<<
+import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 
