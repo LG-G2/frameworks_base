@@ -21,6 +21,9 @@
     <string name="status_bar_recent_lock_item_title">Lock</string>
     <!-- Title shown in recents popup for unlocking an app from being cleared -->
     <string name="status_bar_recent_unlock_item_title">Unlock</string>
+    
+    <!-- Hide notification icons -->
+    <string name="status_bar_notification_hide_icon_packages">Hide app\'s notification icon(s)</string>
 
     <!-- QS Battery Tile -->
     <string name="quick_settings_battery_charging">Charging</string>
