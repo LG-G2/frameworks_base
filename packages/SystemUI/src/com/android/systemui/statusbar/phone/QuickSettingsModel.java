@@ -647,7 +647,8 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     }
 
     boolean deviceHasCameraFlash() {
-        return DeviceUtils.deviceSupportsCameraFlash();
+        return mContext.getResources().getBoolean(
+            com.android.internal.R.bool.config_device_has_camera_flash);
     }
 
     // RSSI

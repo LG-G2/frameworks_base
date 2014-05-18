@@ -1314,4 +1314,7 @@
         <item>333</item>
         <item>353</item>
     </string-array>
+    
+    <!-- Camera flash -->
+    <bool name="config_device_has_camera_flash">false</bool>
 </resources>

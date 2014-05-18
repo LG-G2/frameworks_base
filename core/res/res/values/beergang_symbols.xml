@@ -34,5 +34,8 @@
 
   <java-symbol type="string" name="reboot_progress" />
   <java-symbol type="string" name="reboot_system" />
+  
+  <!--Camera flash-->
+  <java-symbol type="bool" name="config_device_has_camera_flash" />
 
 </resources>
