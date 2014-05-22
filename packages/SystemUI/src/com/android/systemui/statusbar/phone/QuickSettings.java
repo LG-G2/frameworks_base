@@ -109,6 +109,7 @@ class QuickSettings {
         IMMERSIVE,
         MOBILENETWORK,
         LIGHTBULB,
+        SYNC,
         SLEEP
     }
 
@@ -118,7 +119,7 @@ class QuickSettings {
         + DELIMITER + Tile.SETTINGS + DELIMITER + Tile.WIFI + DELIMITER + Tile.RSSI
         + DELIMITER + Tile.ROTATION + DELIMITER + Tile.BATTERY + DELIMITER + Tile.BLUETOOTH
         + DELIMITER + Tile.LOCATION + DELIMITER + Tile.IMMERSIVE + DELIMITER + Tile.MOBILENETWORK
-        + DELIMITER + Tile.LIGHTBULB;
+        + DELIMITER + Tile.LIGHTBULB + DELIMITER + Tile.SYNC;
 
     private Context mContext;
     private PanelBar mBar;
@@ -645,6 +646,29 @@ class QuickSettings {
                     });
                     parent.addView(airplaneTile);
                     if(addMissing) airplaneTile.setVisibility(View.GONE);
+                } else if (Tile.SYNC.toString().equals(tile.toString())) { // Sync tile
+                    final QuickSettingsBasicTile SyncTile
+                            = new QuickSettingsBasicTile(mContext);
+                    SyncTile.setTileId(Tile.SYNC);
+                    SyncTile.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            Intent intent = new Intent("android.settings.SYNC_SETTINGS");
+                            intent.addCategory(Intent.CATEGORY_DEFAULT);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startSettingsActivity(intent);
+                        return true;
+                        }
+                    });
+                    mModel.addSyncModeTile(SyncTile, new QuickSettingsModel.RefreshCallback() {
+                        @Override
+                        public void refreshView(QuickSettingsTileView unused, State state) {
+                            SyncTile.setImageResource(state.iconId);
+                            SyncTile.setText(state.label);
+                        }
+                    });
+                    parent.addView(SyncTile);
+                    if (addMissing) SyncTile.setVisibility(View.GONE);
                 } else if(Tile.BLUETOOTH.toString().equals(tile.toString())) { // Bluetooth
                     if (mModel.deviceSupportsBluetooth()
                             || DEBUG_GONE_TILES) {

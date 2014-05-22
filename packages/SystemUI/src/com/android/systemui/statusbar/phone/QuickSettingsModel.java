@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.SyncStatusObserver;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.hardware.usb.UsbManager;
@@ -324,6 +325,10 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     private RefreshCallback mAirplaneModeCallback;
     private State mAirplaneModeState = new State();
 
+    private QuickSettingsTileView mSyncModeTile;
+    private RefreshCallback mSyncModeCallback;
+    private State mSyncModeState = new State();
+
     private QuickSettingsTileView mUsbModeTile;
     private RefreshCallback mUsbModeCallback;
     private State mUsbModeState = new State();
@@ -582,6 +587,40 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
                 R.drawable.ic_qs_airplane_off);
         mAirplaneModeState.label = r.getString(R.string.quick_settings_airplane_mode_label);
         mAirplaneModeCallback.refreshView(mAirplaneModeTile, mAirplaneModeState);
+    }
+
+    // Sync Mode
+    void addSyncModeTile(QuickSettingsTileView view, RefreshCallback cb) {
+        mSyncModeTile = view;
+        mSyncModeTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getSyncState()) {
+                    ContentResolver.setMasterSyncAutomatically(false);
+                } else {
+                    ContentResolver.setMasterSyncAutomatically(true);
+                }
+                updateSyncState();
+            }
+        });
+        mSyncModeCallback = cb;
+        updateSyncState();
+    }
+
+    private boolean getSyncState() {
+        return ContentResolver.getMasterSyncAutomatically();
+    }
+
+    private void updateSyncState() {
+        Resources r = mContext.getResources();
+        mSyncModeState.enabled = getSyncState();
+        mSyncModeState.iconId = (getSyncState() ?
+                R.drawable.ic_qs_sync_on :
+                R.drawable.ic_qs_sync_off);
+        mSyncModeState.label = (getSyncState() ?
+                r.getString(R.string.quick_settings_sync) :
+                r.getString(R.string.quick_settings_sync_off));
+        mSyncModeCallback.refreshView(mSyncModeTile, mSyncModeState);
     }
 
     // Wifi
