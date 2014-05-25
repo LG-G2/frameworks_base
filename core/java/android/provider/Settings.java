@@ -2550,13 +2550,6 @@ public final class Settings {
         public static final String QUICK_SETTINGS_TILES = "quick_settings_tiles";
 
         /**
-         * Config for advanced power menu
-         *
-         * @hide
-         */
-        public static final String POWER_MENU_CONFIG = "power_menu_config";
-
-        /**
          * Whether or not to launch default music player when headset is connected
          * @hide
          */
