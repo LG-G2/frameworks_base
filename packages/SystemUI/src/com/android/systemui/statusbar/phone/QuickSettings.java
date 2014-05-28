@@ -112,7 +112,8 @@ class QuickSettings {
         LIGHTBULB,
         SYNC,
         SLEEP,
-        VOLUME
+        VOLUME,
+        POWERMENU
     }
 
     public static final String NO_TILES = "NO_TILES";
@@ -120,7 +121,7 @@ class QuickSettings {
     public static final String DEFAULT_TILES = Tile.USER + DELIMITER + Tile.BRIGHTNESS
         + DELIMITER + Tile.SETTINGS + DELIMITER + Tile.WIFI + DELIMITER + Tile.RSSI
         + DELIMITER + Tile.ROTATION + DELIMITER + Tile.BATTERY + DELIMITER + Tile.BLUETOOTH
-        + DELIMITER + Tile.LOCATION + DELIMITER + Tile.IMMERSIVE + DELIMITER + Tile.MOBILENETWORK
+        + DELIMITER + Tile.LOCATION + DELIMITER + Tile.MOBILENETWORK
         + DELIMITER + Tile.LIGHTBULB + DELIMITER + Tile.SYNC;
 
     private Context mContext;
@@ -877,6 +878,33 @@ class QuickSettings {
                     });
                     parent.addView(volumeTile);
                     if(addMissing) volumeTile.setVisibility(View.GONE);
+                } else if(Tile.POWERMENU.toString().equals(tile.toString())) { // Sleep
+                    
+                    final QuickSettingsBasicTile powerMenuTile
+                    = new QuickSettingsBasicTile(mContext);
+                    powerMenuTile.setTileId(Tile.POWERMENU);
+                    powerMenuTile.setImageResource(R.drawable.ic_qs_powermenu);
+                    powerMenuTile.setTextResource(R.string.quick_settings_powermenu_label);
+                    powerMenuTile.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            collapsePanels();
+                            Intent intent = new Intent(Intent.ACTION_POWERMENU);
+                            mContext.sendBroadcast(intent);
+                        }
+                    });
+                    
+                    powerMenuTile.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            collapsePanels();
+                            Intent intent = new Intent(Intent.ACTION_POWERMENU);
+                            mContext.sendBroadcast(intent);
+                            return true;
+                        }
+                    });
+                    parent.addView(powerMenuTile);
+                    if(addMissing) powerMenuTile.setVisibility(View.GONE);
                 } else if(Tile.SLEEP.toString().equals(tile.toString())) { // Sleep
                     final PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
 
