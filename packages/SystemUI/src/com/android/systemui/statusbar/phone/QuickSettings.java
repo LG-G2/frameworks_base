@@ -534,9 +534,9 @@ class QuickSettings {
                                 iv.setImageResource(rssiState.signalIconId);
 
                                 if (rssiState.dataTypeIconId > 0) {
-                                    rssiTile.setFrontImageOverlayResource(rssiState.dataTypeIconId);
+                                    iov.setImageResource(rssiState.dataTypeIconId);
                                 } else if (!mModel.isMobileDataEnabled(mContext)) {
-                                    rssiTile.setFrontImageOverlayResource(R.drawable.ic_qs_signal_data_off);
+                                    iov.setImageResource(R.drawable.ic_qs_signal_data_off);
                                 } else {
                                     iov.setImageDrawable(null);
                                 }
