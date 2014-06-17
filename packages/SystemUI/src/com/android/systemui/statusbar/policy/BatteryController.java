@@ -27,15 +27,12 @@ import java.util.ArrayList;
 public class BatteryController extends BroadcastReceiver {
     private static final String TAG = "StatusBar.BatteryController";
 
+
     private ArrayList<BatteryStateChangeCallback> mChangeCallbacks =
             new ArrayList<BatteryStateChangeCallback>();
 
-    private int mBatteryLevel = 0;
-    private int mBatteryStatus = BatteryManager.BATTERY_STATUS_UNKNOWN;
-    private boolean mBatteryPlugged = false;
-
     public interface BatteryStateChangeCallback {
-        public void onBatteryLevelChanged(int level, boolean pluggedIn, int status);
+        public void onBatteryLevelChanged(int level, boolean pluggedIn);
     }
 
     public BatteryController(Context context) {
@@ -46,20 +43,25 @@ public class BatteryController extends BroadcastReceiver {
 
     public void addStateChangedCallback(BatteryStateChangeCallback cb) {
         mChangeCallbacks.add(cb);
-        // trigger initial update
-        cb.onBatteryLevelChanged(mBatteryLevel, mBatteryPlugged, mBatteryStatus);
     }
 
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
         if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
-            mBatteryLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-            mBatteryPlugged = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0;
-            mBatteryStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
+            final int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+            final int status = intent.getIntExtra(BatteryManager.EXTRA_STATUS,
                     BatteryManager.BATTERY_STATUS_UNKNOWN);
 
+            boolean plugged = false;
+            switch (status) {
+                case BatteryManager.BATTERY_STATUS_CHARGING:
+                case BatteryManager.BATTERY_STATUS_FULL:
+                    plugged = true;
+                    break;
+            }
+
             for (BatteryStateChangeCallback cb : mChangeCallbacks) {
-                cb.onBatteryLevelChanged(mBatteryLevel, mBatteryPlugged, mBatteryStatus);
+                cb.onBatteryLevelChanged(level, plugged);
             }
         }
     }
