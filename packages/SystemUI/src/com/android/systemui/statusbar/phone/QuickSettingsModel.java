@@ -46,15 +46,11 @@ import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
-<<<<<<< HEAD
 
 import com.android.internal.telephony.Phone;
 import com.android.internal.telephony.PhoneConstants;
 import com.android.internal.util.paranoid.DeviceUtils;
 import com.android.internal.util.paranoid.LightbulbConstants;
-=======
-import com.android.systemui.BatteryMeterView.BatteryMeterMode;
->>>>>>> c28363a... Frameworks: Forward Port Circle Battery and Landscape Battery (2/2)
 import com.android.systemui.R;
 import com.android.systemui.settings.BrightnessController.BrightnessStateChangeCallback;
 import com.android.systemui.settings.CurrentUserTracker;
@@ -84,7 +80,6 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     static class BatteryState extends State {
         int batteryLevel;
         boolean pluggedIn;
-        boolean present;
     }
     static class ActivityState extends State {
         boolean activityIn;
@@ -932,18 +927,15 @@ class QuickSettingsModel implements BluetoothStateChangeCallback,
     }
     // BatteryController callback
     @Override
-    public void onBatteryLevelChanged(boolean present, int level, boolean pluggedIn, int status) {
+    public void onBatteryLevelChanged(int level, boolean pluggedIn){
         mBatteryState.batteryLevel = level;
         mBatteryState.pluggedIn = pluggedIn;
-        mBatteryState.present = present;
         mBatteryCallback.refreshView(mBatteryTile, mBatteryState);
     }
-    @Override
-    public void onBatteryMeterModeChanged(BatteryMeterMode mode) {/*Ignore*/}
-    @Override
-    public void onBatteryMeterShowPercent(boolean showPercent) {/*Ignore*/}
-
     void refreshBatteryTile() {
+        if (mBatteryCallback == null) {
+            return;
+        }
         mBatteryCallback.refreshView(mBatteryTile, mBatteryState);
     }
 

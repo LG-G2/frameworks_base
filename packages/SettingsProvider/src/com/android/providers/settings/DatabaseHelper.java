@@ -25,7 +25,6 @@ import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
@@ -193,47 +192,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onOpen(SQLiteDatabase db) {
-        if (!db.isReadOnly()) {
-            // We do special conversion of some CM properties to avoid version conflict
-
-            // Settings.System.STATUS_BAR_BATTERY && Settings.System.STATUS_BAR_BATTERY_SHOW_PERCENT
-            //
-            // The old settings (pre cm-11,0) has these value.
-            // to meter mode
-            //   BATTERY_STYLE_NORMAL = 0
-            //   BATTERY_STYLE_NORMAL_PERCENT = 1
-            //   BATTERY_STYLE_CIRCLE = 2
-            //   BATTERY_STYLE_CIRCLE_PERCENT = 3
-            //   BATTERY_STYLE_GONE = 4
-            //
-            // Now the system supports
-            //   BATTERY_STYLE_NORMAL = 0 or BATTERY_STYLE_NORMAL_PERCENT = 1  ==> ICON PORTRAIT
-            //   BATTERY_STYLE_NORMAL = 5                                      ==> ICON LANDSCAPE
-            //   BATTERY_STYLE_CIRCLE = 2 or BATTERY_STYLE_CIRCLE_PERCENT = 3  ==> CIRCLE
-            //   BATTERY_STYLE_GONE = 4                                        ==> GONE
-            //
-            try {
-                // Update the show percent value to 1 if the old style has percent (1,3)
-                db.execSQL("update " + TABLE_SYSTEM + " set value = 1 where name = " +
-                        "'" + Settings.System.STATUS_BAR_BATTERY_SHOW_PERCENT + "' and " +
-                        "exists (select 'x' from " + TABLE_SYSTEM + " where name = '" +
-                        Settings.System.STATUS_BAR_BATTERY + "' and value in (1,3))");
-
-                // Convert old style ids to new style ids
-                db.execSQL("update " + TABLE_SYSTEM + " set value = 0 where " +
-                        "name = '" + Settings.System.STATUS_BAR_BATTERY + "' and value = 1");
-                db.execSQL("update " + TABLE_SYSTEM + " set value = 2 where " +
-                        "name = '" + Settings.System.STATUS_BAR_BATTERY + "' and value = 3");
-            } catch (SQLException sqlEx) {
-                // Fall-back to defaults values
-                Log.e(TAG, "Failed to convert STATUS_BAR_BATTERY and " +
-                        "STATUS_BAR_BATTERY_SHOW_PERCENT properties", sqlEx);
-            }
-        }
-    }
-
-    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int currentVersion) {
         Log.w(TAG, "Upgrading settings database from version " + oldVersion + " to "
                 + currentVersion);
@@ -260,7 +218,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         if (upgradeVersion < 22) {
-            upgradeVersion = 22;            
+            upgradeVersion = 22;
+            // Upgrade the lock gesture storage location and format
+            upgradeLockPatternLocation(db);
         }
 
         if (upgradeVersion < 23) {
@@ -1703,6 +1663,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    private void upgradeLockPatternLocation(SQLiteDatabase db) {
+        Cursor c = db.query(TABLE_SYSTEM, new String[] {"_id", "value"}, "name='lock_pattern'",
+                null, null, null, null);
+        if (c.getCount() > 0) {
+            c.moveToFirst();
+            String lockPattern = c.getString(1);
+            if (!TextUtils.isEmpty(lockPattern)) {
+                // Convert lock pattern
+                try {
+                    LockPatternUtils lpu = new LockPatternUtils(mContext);
+                    List<LockPatternView.Cell> cellPattern =
+                            LockPatternUtils.stringToPattern(lockPattern);
+                    lpu.saveLockPattern(cellPattern);
+                } catch (IllegalArgumentException e) {
+                    // Don't want corrupted lock pattern to hang the reboot process
+                }
+            }
+            c.close();
+            db.delete(TABLE_SYSTEM, "name='lock_pattern'", null);
+        } else {
+            c.close();
+        }
+    }
+
     private void upgradeScreenTimeoutFromNever(SQLiteDatabase db) {
         // See if the timeout is -1 (for "Never").
         Cursor c = db.query(TABLE_SYSTEM, new String[] { "_id", "value" }, "name=? AND value=?",
@@ -2017,12 +2001,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             loadIntegerSetting(stmt, Settings.System.POINTER_SPEED,
                     R.integer.def_pointer_speed);
-
-            loadIntegerSetting(stmt, Settings.System.STATUS_BAR_BATTERY,
-                    R.integer.def_battery_style);
-
-            loadIntegerSetting(stmt, Settings.System.STATUS_BAR_BATTERY_SHOW_PERCENT,
-                    R.integer.def_battery_show_percent);
         } finally {
             if (stmt != null) stmt.close();
         }
@@ -2035,6 +2013,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 R.bool.def_sound_effects_enabled);
         loadBooleanSetting(stmt, Settings.System.HAPTIC_FEEDBACK_ENABLED,
                 R.bool.def_haptic_feedback);
+
         loadIntegerSetting(stmt, Settings.System.LOCKSCREEN_SOUNDS_ENABLED,
             R.integer.def_lockscreen_sounds_enabled);
     }

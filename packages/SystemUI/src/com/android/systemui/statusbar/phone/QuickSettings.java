@@ -69,15 +69,10 @@ import android.view.WindowManagerGlobal;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-<<<<<<< HEAD
 import com.android.internal.app.MediaRouteDialogPresenter;
 import com.android.internal.util.paranoid.LightbulbConstants;
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.BatteryCircleMeterView;
-=======
-import com.android.internal.util.rascarlo.TorchConstants;
-import com.android.internal.app.MediaRouteDialogPresenter;
->>>>>>> c28363a... Frameworks: Forward Port Circle Battery and Landscape Battery (2/2)
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsModel.ActivityState;
 import com.android.systemui.statusbar.phone.QuickSettingsModel.BluetoothState;
@@ -155,7 +150,6 @@ class QuickSettings {
     
     boolean mTilesSetUp = false;
     boolean mUseDefaultAvatar = false;
-<<<<<<< HEAD
     boolean mEditModeEnabled = false;
     
     private QuickSettingsTileView mBatteryTile;
@@ -165,17 +159,6 @@ class QuickSettings {
     
     private Handler mHandler;
     
-=======
-
-    private Handler mHandler;
-    private ConnectivityManager mConnectivityManager;
-
-    // The set of QuickSettingsTiles that have dynamic spans (and need to be updated on
-    // configuration change)
-    private final ArrayList<QuickSettingsTileView> mDynamicSpannedTiles =
-            new ArrayList<QuickSettingsTileView>();
-
->>>>>>> c28363a... Frameworks: Forward Port Circle Battery and Landscape Battery (2/2)
     public QuickSettings(Context context, QuickSettingsContainerView container) {
         mDevicePolicyManager
         = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -359,7 +342,6 @@ class QuickSettings {
         mContext.startActivityAsUser(intent, new UserHandle(UserHandle.USER_CURRENT));
         collapsePanels();
     }
-<<<<<<< HEAD
     
     public void updateBattery() {
         if (mBattery == null || mCircleBattery == null || mModel == null) {
@@ -424,29 +406,6 @@ class QuickSettings {
                                                             ContactsContract.QuickContact.MODE_LARGE, null);
                                 mContext.startActivityAsUser(intent,
                                                              new UserHandle(UserHandle.USER_CURRENT));
-=======
-
-    private void addUserTiles(ViewGroup parent, LayoutInflater inflater) {
-        QuickSettingsTileView userTile = (QuickSettingsTileView)
-                inflater.inflate(R.layout.quick_settings_tile, parent, false);
-        userTile.setContent(R.layout.quick_settings_tile_user, inflater);
-        userTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                collapsePanels();
-                final UserManager um = UserManager.get(mContext);
-                if (um.getUsers(true).size() > 1) {
-                    // Since keyguard and systemui were merged into the same process to save
-                    // memory, they share the same Looper and graphics context.  As a result,
-                    // there's no way to allow concurrent animation while keyguard inflates.
-                    // The workaround is to add a slight delay to allow the animation to finish.
-                    mHandler.postDelayed(new Runnable() {
-                        public void run() {
-                            try {
-                                WindowManagerGlobal.getWindowManagerService().lockNow(null);
-                            } catch (RemoteException e) {
-                                Log.e(TAG, "Couldn't show user switcher", e);
->>>>>>> c28363a... Frameworks: Forward Port Circle Battery and Landscape Battery (2/2)
                             }
                         }
                     });
@@ -815,7 +774,6 @@ class QuickSettings {
                             }
                         }
                     });
-<<<<<<< HEAD
                     
                     locationTile.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
@@ -832,65 +790,6 @@ class QuickSettings {
                     if(addMissing) locationTile.setVisibility(View.GONE);
                 } else if(Tile.IMMERSIVE.toString().equals(tile.toString())) { // Immersive mode
                     final QuickSettingsBasicTile immersiveTile
-=======
-            parent.addView(rotationLockTile);
-        }
-
-        // Battery
-        final QuickSettingsTileView batteryTile = (QuickSettingsTileView)
-                inflater.inflate(R.layout.quick_settings_tile, parent, false);
-        batteryTile.setContent(R.layout.quick_settings_tile_battery, inflater);
-        batteryTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startSettingsActivity(Intent.ACTION_POWER_USAGE_SUMMARY);
-            }
-        });
-        mModel.addBatteryTile(batteryTile, new QuickSettingsModel.RefreshCallback() {
-            @Override
-            public void refreshView(QuickSettingsTileView unused, State state) {
-                QuickSettingsModel.BatteryState batteryState =
-                        (QuickSettingsModel.BatteryState) state;
-                String t;
-                if (batteryState.batteryLevel == 100) {
-                    t = mContext.getString(R.string.quick_settings_battery_charged_label);
-                } else {
-                    t = batteryState.pluggedIn
-                        ? mContext.getString(R.string.quick_settings_battery_charging_label,
-                                batteryState.batteryLevel)
-                        : mContext.getString(R.string.status_bar_settings_battery_meter_format,
-                                batteryState.batteryLevel);
-                }
-                ((TextView)batteryTile.findViewById(R.id.text)).setText(t);
-                batteryTile.setContentDescription(
-                        mContext.getString(R.string.accessibility_quick_settings_battery, t));
-            }
-        });
-        parent.addView(batteryTile);
-
-        // Airplane Mode
-        final QuickSettingsBasicTile airplaneTile
-                = new QuickSettingsBasicTile(mContext);
-        mModel.addAirplaneModeTile(airplaneTile, new QuickSettingsModel.RefreshCallback() {
-            @Override
-            public void refreshView(QuickSettingsTileView unused, State state) {
-                airplaneTile.setImageResource(state.iconId);
-
-                String airplaneState = mContext.getString(
-                        (state.enabled) ? R.string.accessibility_desc_on
-                                : R.string.accessibility_desc_off);
-                airplaneTile.setContentDescription(
-                        mContext.getString(R.string.accessibility_quick_settings_airplane, airplaneState));
-                airplaneTile.setText(state.label);
-            }
-        });
-        parent.addView(airplaneTile);
-
-        // Bluetooth
-        if (mModel.deviceSupportsBluetooth()
-                || DEBUG_GONE_TILES) {
-            final QuickSettingsBasicTile bluetoothTile
->>>>>>> c28363a... Frameworks: Forward Port Circle Battery and Landscape Battery (2/2)
                     = new QuickSettingsBasicTile(mContext);
                     final boolean immersiveModeOn = immersiveEnabled();
                     immersiveTile.setTileId(Tile.IMMERSIVE);
@@ -1421,9 +1320,4 @@ implements QuickSettingsModel.RefreshCallback {
         }
     }
 }
-<<<<<<< HEAD
 }
-=======
-
-
->>>>>>> c28363a... Frameworks: Forward Port Circle Battery and Landscape Battery (2/2)
