@@ -359,13 +359,6 @@ public class BatteryMeterView extends View implements DemoMode {
                     mTextPaint);
         }
     }
-    
-    public void setShowPercentage(boolean show) {
-        if (ENABLE_PERCENT) {
-            mShowPercent = show;
-            postInvalidate();
-        }
-    }
 
     private boolean mDemoMode;
     private BatteryTracker mDemoTracker = new BatteryTracker();
