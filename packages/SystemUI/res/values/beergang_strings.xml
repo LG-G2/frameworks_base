@@ -58,5 +58,8 @@
     <!-- NFC Quicksettings tile -->
     <string name="quick_settings_nfc_label">NFC on</string>
     <string name="quick_settings_nfc_off_label">NFC off</string>
+    <!-- Quiet hours Quicksettings tile -->
+    <string name="quick_settings_quiethours_label">Quiet hours on</string>
+    <string name="quick_settings_quiethours_off_label">Quiet hours off</string>
     
 </resources>

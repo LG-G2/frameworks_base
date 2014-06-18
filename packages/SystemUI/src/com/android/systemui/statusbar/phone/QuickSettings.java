@@ -118,6 +118,7 @@ class QuickSettings {
         SLEEP,
         POWERMENU,
         VOLUME,
+        QUIETHOURS,
         NFC
     }
     
@@ -944,6 +945,38 @@ class QuickSettings {
                     });
                     parent.addView(volumeTile);
                     if(addMissing) volumeTile.setVisibility(View.GONE);
+                } else if (Tile.QUIETHOURS.toString().equals(tile.toString())) { // Quiet hours tile
+                    final QuickSettingsBasicTile quietHourTile
+                    = new QuickSettingsBasicTile(mContext);
+                    quietHourTile.setTileId(Tile.QUIETHOURS);
+                    quietHourTile.setImageResource(R.drawable.ic_qs_quiet_hours_off);
+                    quietHourTile.setTextResource(R.string.quick_settings_quiethours_off_label);
+                    quietHourTile.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            boolean checkModeOn = Settings.System.getInt(mContext
+                                                                         .getContentResolver(), Settings.System.QUIET_HOURS_ENABLED, 0) == 1;
+                            Settings.System.putInt(mContext.getContentResolver(),
+                                                   Settings.System.QUIET_HOURS_ENABLED, checkModeOn ? 0 : 1);
+                            Intent scheduleSms = new Intent();
+                            scheduleSms.setAction("com.android.settings.paranoid.service.SCHEDULE_SERVICE_COMMAND");
+                            mContext.sendBroadcast(scheduleSms);
+                        }
+                    });
+                    quietHourTile.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            Intent intent = new Intent(Intent.ACTION_MAIN);
+                            intent.setClassName("com.android.settings",
+                                                "com.android.settings.Settings$QuietHoursSettingsActivity");
+                            startSettingsActivity(intent);
+                            return true;
+                        }
+                    });
+                    mModel.addQuietHourTile(quietHourTile,
+                                            new QuickSettingsModel.BasicRefreshCallback(quietHourTile));
+                    parent.addView(quietHourTile);
+                    if (addMissing) quietHourTile.setVisibility(View.GONE);
                 } else if(Tile.SLEEP.toString().equals(tile.toString())) { // Sleep
                     final PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
                     
