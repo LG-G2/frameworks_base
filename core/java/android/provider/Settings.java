@@ -2750,34 +2750,12 @@ public final class Settings {
          */
         public static final String PEEK_STATE = "peek_state";
 
-	 /**
+        /**
          * Display style of the status bar battery information
          * default: 0
          * @hide
          */
         public static final String STATUS_BAR_BATTERY = "status_bar_battery";
-
-        /**
-         * Circle battery icon color
-         * in statusbar
-         * @hide
-         */
-        public static final String STATUS_BAR_BATTERY_COLOR = "status_bar_battery_color";
-
-        /**
-         * Battery icon text color
-         * in statusbar
-         * @hide
-         */
-        public static final String STATUS_BAR_BATTERY_TEXT_COLOR = "status_bar_battery_text_color";
-
-        /**
-         * Battery icon text charging color
-         * in statusbar
-         * @hide
-         */
-        public static final String STATUS_BAR_BATTERY_TEXT_CHARGING_COLOR =
-                "status_bar_battery_text_charging_color";
 
         /**
          * Circle battery animation speed during charge
