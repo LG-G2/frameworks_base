@@ -347,14 +347,14 @@ class QuickSettings {
         if (mBattery == null || mCircleBattery == null || mModel == null) {
             return;
         }
-        mCircleBattery.updateSettings();
-        mBattery.updateSettings();
         int batteryStyle = Settings.System.getIntForUser(mContext.getContentResolver(),
             Settings.System.STATUS_BAR_BATTERY, 0, UserHandle.USER_CURRENT);
         mBatteryHasPercent = batteryStyle == BatteryMeterView.BATTERY_STYLE_ICON_PERCENT
             || batteryStyle == BatteryMeterView.BATTERY_STYLE_PERCENT
             || batteryStyle == BatteryMeterView.BATTERY_STYLE_CIRCLE_PERCENT
             || batteryStyle == BatteryMeterView.BATTERY_STYLE_DOTTED_CIRCLE_PERCENT;
+        mCircleBattery.updateSettings();
+        mBattery.updateSettings();
         mModel.refreshBatteryTile();
     }
     
@@ -624,6 +624,7 @@ class QuickSettings {
                     // Battery
                     mBatteryTile = (QuickSettingsTileView)
                     inflater.inflate(R.layout.quick_settings_tile, parent, false);
+                    mBatteryTile.setTileId(Tile.BATTERY);
                     mBatteryTile.setContent(R.layout.quick_settings_tile_battery, inflater);
                     mBattery = (BatteryMeterView) mBatteryTile.findViewById(R.id.image);
                     mBattery.setVisibility(View.GONE);
@@ -1187,7 +1188,7 @@ class QuickSettings {
         Resources r = mContext.getResources();
         
         // Update the model
-        mModel.updateResources();
+        mModel.refreshBatteryTile();
         
         QuickSettingsContainerView container = ((QuickSettingsContainerView)mContainerView);
         
