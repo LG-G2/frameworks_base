@@ -25,10 +25,10 @@
     <!-- Hide notification icons -->
     <string name="status_bar_notification_hide_icon_packages">Hide app\'s notification icon(s)</string>
 
-    <!-- QS Battery Tile -->
+    <!-- QS Battery Tile [CHAR LIMIT=NONE] -->
     <string name="quick_settings_battery_charging">Charging</string>
     <string name="quick_settings_battery_discharging">Discharging</string>
-    <!--Screenshot delete -->
+    <!--Screenshot delete [CHAR LIMIT=NONE] -->
     <string name="screenshot_delete_action">Delete</string>
     <!-- QuickSettings: Immersive mode [CHAR LIMIT=NONE] -->
     <string name="quick_settings_immersive_mode_label">Immersive</string>
@@ -51,15 +51,20 @@
     <string name="quick_settings_usb_tether_on_label">Tethering on</string>
     <string name="quick_settings_sync">Sync</string>
     <string name="quick_settings_sync_off">Sync off</string>
-    <!-- QuickSettings: Volume Tile  -->
+    <!-- QuickSettings: Volume Tile [CHAR LIMIT=NONE] -->
     <string name="quick_settings_volume_label">Volume</string>
-    <!-- QuickSettings: Power Menu Tile  -->
+    <!-- QuickSettings: Power Menu Tile [CHAR LIMIT=NONE] -->
     <string name="quick_settings_powermenu_label">Power menu</string>
-    <!-- NFC Quicksettings tile -->
+    <!-- NFC Quicksettings tile [CHAR LIMIT=NONE] -->
     <string name="quick_settings_nfc_label">NFC on</string>
     <string name="quick_settings_nfc_off_label">NFC off</string>
-    <!-- Quiet hours Quicksettings tile -->
+    <!-- Quiet hours Quicksettings tile [CHAR LIMIT=NONE] -->
     <string name="quick_settings_quiethours_label">Quiet hours on</string>
     <string name="quick_settings_quiethours_off_label">Quiet hours off</string>
+    <!-- QuickSettings: Sound Tile [CHAR LIMIT=NONE] -->
+    <string name="quick_settings_ringer_mode_silent_label">Silent</string>
+    <string name="quick_settings_ringer_mode_vibrate_label">Vibrate</string>
+    <string name="quick_settings_ringer_mode_normal_label">Sound</string>
+    <string name="quick_settings_ringer_mode_normal_vibrate_label">Sound &amp; Vibration</string>
     
 </resources>

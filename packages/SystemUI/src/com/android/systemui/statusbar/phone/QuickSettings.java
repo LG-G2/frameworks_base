@@ -118,6 +118,7 @@ class QuickSettings {
         SLEEP,
         POWERMENU,
         VOLUME,
+        SOUND,
         QUIETHOURS,
         NFC
     }
@@ -621,8 +622,7 @@ class QuickSettings {
                         parent.addView(rotationLockTile);
                         if(addMissing) rotationLockTile.setVisibility(View.GONE);
                     }
-                } else if(Tile.BATTERY.toString().equals(tile.toString())) {
-                    // Battery
+                } else if(Tile.BATTERY.toString().equals(tile.toString())) { // Battery
                     mBatteryTile = (QuickSettingsTileView)
                     inflater.inflate(R.layout.quick_settings_tile, parent, false);
                     mBatteryTile.setTileId(Tile.BATTERY);
@@ -921,30 +921,37 @@ class QuickSettings {
                     });
                     parent.addView(powerMenuTile);
                     if(addMissing) powerMenuTile.setVisibility(View.GONE);
-                } else if(Tile.VOLUME.toString().equals(tile.toString())) { // Volume tile
-                    final QuickSettingsBasicTile volumeTile
+                } else if(Tile.SOUND.toString().equals(tile.toString())) { // Sound tile
+                    final QuickSettingsBasicTile soundTile
                     = new QuickSettingsBasicTile(mContext);
-                    volumeTile.setTileId(Tile.VOLUME);
-                    volumeTile.setImageResource(R.drawable.ic_qs_volume);
-                    volumeTile.setTextResource(R.string.quick_settings_volume_label);
-                    volumeTile.setOnClickListener(new View.OnClickListener() {
+                    soundTile.setTileId(Tile.SOUND);
+                    soundTile.setImageResource(R.drawable.ic_qs_ringer_normal);
+                    soundTile.setTextResource(R.string.quick_settings_ringer_mode_normal_label);
+                    soundTile.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            collapsePanels();
-                            AudioManager am = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-                            am.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI);
+                            mModel.switchRingerMode();
+                            mModel.refreshRingerModeTile();
                         }
                     });
                     
-                    volumeTile.setOnLongClickListener(new View.OnLongClickListener() {
+                    soundTile.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
                             startSettingsActivity(android.provider.Settings.ACTION_SOUND_SETTINGS);
                             return true;
                         }
                     });
-                    parent.addView(volumeTile);
-                    if(addMissing) volumeTile.setVisibility(View.GONE);
+                    
+                    mModel.addRingerModeTile(soundTile, new QuickSettingsModel.RefreshCallback() {
+                        @Override
+                        public void refreshView(QuickSettingsTileView unused, State state) {
+                            soundTile.setImageResource(state.iconId);
+                            soundTile.setText(state.label);
+                        }
+                    });
+                    parent.addView(soundTile);
+                    if(addMissing) soundTile.setVisibility(View.GONE);
                 } else if (Tile.QUIETHOURS.toString().equals(tile.toString())) { // Quiet hours tile
                     final QuickSettingsBasicTile quietHourTile
                     = new QuickSettingsBasicTile(mContext);
